@@ -27,10 +27,9 @@ class NbtCompositeDecoder(private val compound: CompoundBinaryTag) : CompositeDe
     override val serializersModule: SerializersModule
         get() = EmptySerializersModule()
 
-    // We iterate through the descriptor's element indices.
     private var currentIndex = 0
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
-        return if (currentIndex < descriptor.elementsCount) currentIndex++ else CompositeDecoder.DECODE_DONE
+        return if (currentIndex < compound.size()) currentIndex++ else CompositeDecoder.DECODE_DONE
     }
 
     override fun decodeIntElement(descriptor: SerialDescriptor, index: Int): Int {

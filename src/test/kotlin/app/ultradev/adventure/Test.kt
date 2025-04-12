@@ -39,4 +39,16 @@ class Test {
 
         assert(testB == decodedB)
     }
+
+    @Serializable
+    data class TestMap(val map: Map<String, Int>)
+
+    @Test
+    fun testMapEncoder() {
+        val testA = TestMap(mapOf("a" to 42, "b" to 13))
+        val encodedA = NbtFormat.encodeToBinaryTag(testA)
+        val decodedA = NbtFormat.decodeFromBinaryTag<TestMap>(encodedA)
+
+        assert(testA == decodedA)
+    }
 }

@@ -16,26 +16,31 @@ class NbtFormat(override val serializersModule: SerializersModule) : SerialForma
 
         val DEFAULT = NbtFormat(serializersModule)
 
-        inline fun <reified T> encodeToBinaryTag(
-            value: T,
-            serializer: SerializationStrategy<T> = serializer()
-        ): BinaryTag = DEFAULT.encodeToBinaryTag(value, serializer)
 
-        inline fun <reified T> decodeFromBinaryTag(
-            tag: BinaryTag,
-            deserializer: DeserializationStrategy<T> = serializer()
-        ): T = DEFAULT.decodeFromBinaryTag(tag, deserializer)
+        inline fun <reified T> encodeToBinaryTag(value: T): BinaryTag = DEFAULT.encodeToBinaryTag(value, serializer())
+
+        fun <T> encodeToBinaryTag(value: T, serializer: SerializationStrategy<T>): BinaryTag =
+            DEFAULT.encodeToBinaryTag(value, serializer)
+
+        inline fun <reified T> decodeFromBinaryTag(tag: BinaryTag): T = DEFAULT.decodeFromBinaryTag(tag, serializer())
+
+        fun <T> decodeFromBinaryTag(tag: BinaryTag, deserializer: DeserializationStrategy<T>): T =
+            DEFAULT.decodeFromBinaryTag(tag, deserializer)
     }
 
-    inline fun <reified T> encodeToBinaryTag(value: T, serializer: SerializationStrategy<T> = serializer()): BinaryTag {
+    inline fun <reified T> encodeToBinaryTag(value: T): BinaryTag = DEFAULT.encodeToBinaryTag(value, serializer())
+
+    fun <T> encodeToBinaryTag(value: T, serializer: SerializationStrategy<T>): BinaryTag {
         val encoder = NbtEncoder()
         serializer.serialize(encoder, value)
         return encoder.result ?: throw SerializationException("No result produced by NbtEncoder")
     }
 
-    inline fun <reified T> decodeFromBinaryTag(
+    inline fun <reified T> decodeFromBinaryTag(tag: BinaryTag): T = DEFAULT.decodeFromBinaryTag(tag, serializer())
+
+    fun <T> decodeFromBinaryTag(
         tag: BinaryTag,
-        deserializer: DeserializationStrategy<T> = serializer()
+        deserializer: DeserializationStrategy<T>
     ): T {
         val decoder = NbtDecoder(tag)
         return deserializer.deserialize(decoder)
